@@ -1,6 +1,6 @@
-/* eslint-disable jsx-a11y/media-has-caption */
 /* eslint-disable no-lone-blocks */
-import React, { useEffect, useState } from 'react';
+/* eslint-disable jsx-a11y/media-has-caption */
+import React, { useEffect, useState, useRef } from 'react';
 
 import {
     AudioOutlined,
@@ -11,6 +11,9 @@ import { Typography, Button, Row, Col, Slider } from 'antd';
 import dynamic from 'next/dynamic';
 
 import StyledHomePage, { SlidersWrapper } from './styles';
+import { useGainStore } from '../../store/useGainStore';
+import { useHighFrequencyStore } from '../../store/useHighFrequencyStore';
+import { useLowFrequencyStore } from '../../store/useLowFrequencyStore';
 
 const ReactMediaRecorder = dynamic(
     () => import('react-media-recorder').then((mod) => mod.ReactMediaRecorder),
@@ -57,63 +60,121 @@ const bullets = [
 ];
 
 const SliderSection = ({ className, mediaBlobUrl }) => {
-    const [level, setLevel] = useState(1);
-    const [minFrequency, setMinFrequency] = useState(300);
-    const [maxFrequency, setMaxFrequency] = useState(3500);
+    const gainValue = useGainStore((state) => state.gainValue);
+    const setGainValue = useGainStore((state) => state.setGainValue);
+
+    const highFrequencyValue = useHighFrequencyStore(
+        (state) => state.highFrequencyValue
+    );
+    const setHighFrequencyValue = useHighFrequencyStore(
+        (state) => state.setHighFrequencyValue
+    );
+
+    const lowFrequencyValue = useLowFrequencyStore(
+        (state) => state.lowFrequencyValue
+    );
+    const setLowFrequencyValue = useLowFrequencyStore(
+        (state) => state.setLowFrequencyValue
+    );
+
     const [contentType, setContentType] = useState();
+    const audioRef = useRef('audio-element');
+    const gainRef = useRef(null);
+    const filterLowRef = useRef(null);
+    const filterHighRef = useRef(null);
+    const audioTrackRef = useRef(null);
 
     const resetInitial = () => {
-        setLevel(1);
-        setMinFrequency(300);
-        setMaxFrequency(3500);
+        setGainValue(1);
+        setLowFrequencyValue(300);
+        setHighFrequencyValue(3500);
     };
 
     useEffect(() => {
-        if (mediaBlobUrl) {
-            fetch(mediaBlobUrl).then((response) => {
-                setContentType(JSON.stringify([...response.headers]));
-            });
+        if (mediaBlobUrl && audioRef) {
+            const audioCtx = new AudioContext();
+
+            if (!audioTrackRef.current) {
+                audioTrackRef.current = audioCtx.createMediaElementSource(
+                    audioRef.current
+                );
+                const gainNode = audioCtx.createGain();
+                gainNode.gain.value = gainValue;
+
+                const filterLow = audioCtx.createBiquadFilter();
+                filterLow.type = 'highpass';
+                filterLow.frequency.value = lowFrequencyValue;
+
+                const filterHigh = audioCtx.createBiquadFilter();
+                filterHigh.type = 'lowpass';
+                filterHigh.frequency.value = highFrequencyValue;
+
+                gainRef.current = gainNode;
+                filterLowRef.current = filterLow;
+                filterHighRef.current = filterHigh;
+
+                fetch(mediaBlobUrl).then((response) => {
+                    setContentType(JSON.stringify([...response.headers]));
+                });
+
+                audioTrackRef.current
+                    .connect(filterLow)
+                    .connect(filterHigh)
+                    .connect(gainNode)
+                    .connect(audioCtx.destination);
+            }
         }
     }, [mediaBlobUrl]);
 
-    // blob:http://localhost:3000/ae656c1e-7365-441e-9c28-d650246f2f36
-
-    console.log(contentType, 'xxx');
+    useEffect(() => {
+        if (filterHighRef.current && filterLowRef.current && gainRef.current) {
+            gainRef.current.gain.value = gainValue;
+            filterLowRef.current.frequency.value = lowFrequencyValue;
+            filterHighRef.current.frequency.value = highFrequencyValue;
+        }
+    }, [
+        filterHighRef,
+        filterLowRef,
+        gainRef,
+        gainValue,
+        highFrequencyValue,
+        lowFrequencyValue,
+    ]);
 
     return (
         <SlidersWrapper className={className}>
             <Col span={24}>
                 <Slider
-                    onChange={(value) => setLevel(value)}
-                    value={level}
-                    defaultValue={level}
+                    onChange={(value) => setGainValue(value)}
+                    value={gainValue}
+                    defaultValue={gainValue}
                     min={0}
                     max={100}
                 />
                 <Row align="middle" justify="center">
-                    <Text>Kazanç (Seviye): {level}X</Text>
+                    <Text>Kazanç (Seviye): {gainValue}X</Text>
                 </Row>
                 <Slider
-                    onChange={(value) => setMinFrequency(value)}
-                    value={minFrequency}
-                    defaultValue={minFrequency}
+                    onChange={(value) => setLowFrequencyValue(value)}
+                    value={lowFrequencyValue}
+                    defaultValue={lowFrequencyValue}
                     min={0}
                     max={1500}
                     className="mt-md"
                 />
                 <Row align="middle" justify="center">
-                    <Text>Alt Frekans: {minFrequency} Hz</Text>
+                    <Text>Alt Frekans: {lowFrequencyValue} Hz</Text>
                 </Row>
                 <Slider
-                    onChange={(value) => setMaxFrequency(value)}
-                    value={maxFrequency}
-                    defaultValue={maxFrequency}
+                    onChange={(value) => setHighFrequencyValue(value)}
+                    value={highFrequencyValue}
+                    defaultValue={highFrequencyValue}
                     min={2000}
                     max={22050}
                     className="mt-md"
                 />
                 <Row align="middle" justify="center">
-                    <Text>Üst Frekans: {maxFrequency} Hz</Text>
+                    <Text>Üst Frekans: {highFrequencyValue} Hz</Text>
                 </Row>
                 <Row align="middle" justify="center" className="mt-md">
                     <Button
@@ -127,7 +188,7 @@ const SliderSection = ({ className, mediaBlobUrl }) => {
                 </Row>
                 {mediaBlobUrl && (
                     <Row className="mt-md" align="middle" justify="center">
-                        <audio src={mediaBlobUrl} controls />
+                        <audio ref={audioRef} src={mediaBlobUrl} controls />
                         <Text>{contentType}</Text>
                     </Row>
                 )}
@@ -198,6 +259,7 @@ const HomePage = () => {
                                             setCurrentStatus(
                                                 initialStatus.STARTED
                                             );
+                                            startRecording();
                                         }}
                                         type="primary"
                                         className="btn w-100-f">
