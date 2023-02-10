@@ -191,7 +191,7 @@ const SliderSection = ({ className, mediaBlobUrl }) => {
                 {mediaBlobUrl && (
                     <Row className="mt-md" align="middle" justify="center">
                         <audio
-                            id="audio-element-id"
+                            autoPlay
                             ref={audioRef}
                             src={mediaBlobUrl}
                             controls
