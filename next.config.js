@@ -5,7 +5,7 @@ const withPWA = require('next-pwa')({
 });
 
 module.exports = withPWA({
-    reactStrictMode: true,
+    // reactStrictMode: true,
     swcMinify: true,
     // images: {
     //     domains: ['cdn.sanity.io'],

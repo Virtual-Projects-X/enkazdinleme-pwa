@@ -1,3 +1,4 @@
+/* eslint-disable react/button-has-type */
 /* eslint-disable jsx-a11y/media-has-caption */
 
 import { Button } from 'antd';
@@ -11,26 +12,30 @@ const ReactMediaRecorder = dynamic(
 );
 
 const RecordView = () => (
-    // const { status, startRecording, stopRecording, mediaBlobUrl } =
-    //     useReactMediaRecorder({ video: true, askPermissionOnMount: true });
-    // console.log(status, 'xxx');
-
     <ReactMediaRecorder
         audio
+        video={false}
         render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
             <div>
                 <p>{status}</p>
                 <Button onClick={startRecording}>Start Recording</Button>
                 <Button onClick={stopRecording}>Stop Recording</Button>
-                <video src={mediaBlobUrl} controls autoPlay loop />
+                <audio src={mediaBlobUrl} controls />
             </div>
         )}
     />
-    // <div>
-    //     <p>{status}</p>
-    //     <Button onClick={startRecording}>Start Recording</Button>
-    //     <Button onClick={stopRecording}>Stop Recording</Button>
-    //     <video src={mediaBlobUrl} controls autoPlay loop />
-    // </div>
 );
 export default RecordView;
+
+// <ReactMediaRecorder
+//     audio
+//     video={false}
+//     render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
+//         <div>
+//             <p>{status}</p>
+//             <Button onClick={startRecording}>Start Recording</Button>
+//             <Button onClick={stopRecording}>Stop Recording</Button>
+//             <audio src={mediaBlobUrl} controls />
+//         </div>
+//     )}
+// />

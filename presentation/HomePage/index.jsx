@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+/* eslint-disable jsx-a11y/media-has-caption */
+/* eslint-disable no-lone-blocks */
+import React, { useEffect, useState } from 'react';
 
 import {
     AudioOutlined,
@@ -6,9 +8,16 @@ import {
     BackwardOutlined,
 } from '@ant-design/icons';
 import { Typography, Button, Row, Col, Slider } from 'antd';
+import dynamic from 'next/dynamic';
 
 import StyledHomePage, { SlidersWrapper } from './styles';
-// import Recorder from '../../components/Recorder';
+
+const ReactMediaRecorder = dynamic(
+    () => import('react-media-recorder').then((mod) => mod.ReactMediaRecorder),
+    {
+        ssr: false,
+    }
+);
 
 const { Title, Text } = Typography;
 
@@ -47,7 +56,7 @@ const bullets = [
     },
 ];
 
-const SliderSection = ({ className }) => {
+const SliderSection = ({ className, mediaBlobUrl }) => {
     const [level, setLevel] = useState(1);
     const [minFrequency, setMinFrequency] = useState(300);
     const [maxFrequency, setMaxFrequency] = useState(3500);
@@ -103,6 +112,11 @@ const SliderSection = ({ className }) => {
                         İnsan Sesi Filtreleme Ayarlarına Dön
                     </Button>
                 </Row>
+                {mediaBlobUrl && (
+                    <Row className="mt-md" align="middle" justify="center">
+                        <audio src={mediaBlobUrl} controls />
+                    </Row>
+                )}
             </Col>
         </SlidersWrapper>
     );
@@ -111,56 +125,83 @@ const SliderSection = ({ className }) => {
 const HomePage = () => {
     const [currentStatus, setCurrentStatus] = useState(1);
 
-    const status = {
+    const initialStatus = {
         INITIAL: 1,
         STARTED: 2,
         FINISHED: 3,
     };
+
     return (
         <StyledHomePage span={24}>
             <Row align="middle" justify="center">
                 <Title level={2}>Enkaz Dinleme Uygulaması</Title>
-                {/* <Recorder /> */}
             </Row>
-            <Row align="middle" justify="center" className="mt-md">
-                <Col xs={20} sm={20} md={20} lg={16} xl={16} xxl={16}>
-                    {currentStatus === 1 ? (
-                        <Button
-                            icon={<AudioOutlined />}
-                            onClick={() => {
-                                setCurrentStatus(status.STARTED);
-                            }}
-                            type="primary"
-                            className="btn w-100-f">
-                            Kayıt
-                        </Button>
-                    ) : currentStatus === 2 ? (
-                        <Button
-                            icon={<AudioMutedOutlined />}
-                            danger
-                            onClick={() => {
-                                setCurrentStatus(status.FINISHED);
-                            }}
-                            type="primary"
-                            className="btn w-100-f">
-                            Dur
-                        </Button>
-                    ) : (
-                        currentStatus === 3 && (
-                            <Button
-                                icon={<AudioMutedOutlined />}
-                                onClick={() => {
-                                    setCurrentStatus(status.STARTED);
-                                }}
-                                type="primary"
-                                className="btn w-100-f">
-                                Yeni Kayıt
-                            </Button>
-                        )
-                    )}
-                    {currentStatus === 3 && <SliderSection className="mt-md" />}
-                </Col>
-            </Row>
+            <ReactMediaRecorder
+                audio
+                video={false}
+                render={({
+                    status,
+                    startRecording,
+                    stopRecording,
+                    mediaBlobUrl,
+                }) => (
+                    <Row align="middle" justify="center" className="mt-md">
+                        <Col xs={20} sm={20} md={20} lg={16} xl={16} xxl={16}>
+                            {currentStatus === 1 ? (
+                                <Button
+                                    icon={<AudioOutlined />}
+                                    onClick={() => {
+                                        {
+                                            setCurrentStatus(
+                                                initialStatus.STARTED
+                                            );
+                                            startRecording();
+                                        }
+                                    }}
+                                    type="primary"
+                                    className="btn w-100-f">
+                                    Kayıt
+                                </Button>
+                            ) : currentStatus === 2 ? (
+                                <Button
+                                    icon={<AudioMutedOutlined />}
+                                    danger
+                                    onClick={() => {
+                                        setCurrentStatus(
+                                            initialStatus.FINISHED
+                                        );
+                                        stopRecording();
+                                    }}
+                                    type="primary"
+                                    className="btn w-100-f">
+                                    Dur {status}
+                                </Button>
+                            ) : (
+                                currentStatus === 3 && (
+                                    <Button
+                                        icon={<AudioMutedOutlined />}
+                                        onClick={() => {
+                                            setCurrentStatus(
+                                                initialStatus.STARTED
+                                            );
+                                        }}
+                                        type="primary"
+                                        className="btn w-100-f">
+                                        Yeni Kayıt
+                                    </Button>
+                                )
+                            )}
+                            {currentStatus === 3 && (
+                                <SliderSection
+                                    mediaBlobUrl={mediaBlobUrl}
+                                    className="mt-md"
+                                />
+                            )}
+                        </Col>
+                    </Row>
+                )}
+            />
+
             <div
                 className="bullets-wrapper mt-md"
                 align="middle"
