@@ -1,0 +1,59 @@
+{
+  "root": true,
+  "extends": ["wesbos", "next/core-web-vitals", "next"],
+  "plugins": ["react", "react-hooks"],
+  // "settings": {
+  //   "import/resolver": {
+  //     "alias": {
+  //       "map": [
+  //         ["@components", "./src/components"],
+  //         ["@pages", "./src/pages"]
+  //       ],
+  //       "extensions": [".js", ".jsx", ".less"]
+  //     }
+  //   }
+  // },
+  "rules": {
+    "react/prop-types": 0,
+    "import/no-named-as-default": 0,
+    "import/no-extraneous-dependencies": 0,
+    "react/display-name": 0,
+    "no-console": 1,
+    "react/jsx-props-no-spreading": "off",
+    "import/no-unresolved": [2, { "caseSensitive": false }],
+    "no-nested-ternary": 0,
+    "prettier/prettier": [
+      2,
+      {
+        "trailingComma": "es5",
+
+        "singleQuote": true,
+
+        "tabWidth": 4,
+
+        "jsxBracketSameLine": true,
+
+        "endOfLine": "auto"
+      }
+    ],
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "internal"],
+        "pathGroups": [
+          {
+            "pattern": "react",
+            "group": "external",
+            "position": "before"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["react"],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ]
+  }
+}

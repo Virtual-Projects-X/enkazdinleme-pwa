@@ -1,0 +1,43 @@
+{
+  "terminal.integrated.shell.osx": "/bin/zsh",
+  // These are all my auto-save configs
+  "editor.formatOnSave": true,
+  "editor.semanticHighlighting.enabled": true,
+  // turn it off for JS and JSX, we will do this via eslint
+  "[javascript]": {
+    "editor.formatOnSave": false
+  },
+  "[javascriptreact]": {
+    "editor.formatOnSave": false
+  },
+  // show eslint icon at bottom toolbar
+  "eslint.alwaysShowStatus": true,
+  // tell the ESLint plugin to run on save
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  // Optional BUT IMPORTANT: If you have the prettier extension enabled for other languages like CSS and HTML, turn it off for JS since we are doing it through Eslint already
+  "prettier.disableLanguages": ["javascript", "javascriptreact"],
+
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#22fb7c",
+    "activityBar.activeBorder": "#07a3b8",
+    "activityBar.background": "#22fb7c",
+    "activityBar.foreground": "#15202b",
+    "activityBar.inactiveForeground": "#15202b99",
+    "activityBarBadge.background": "#b582fd",
+    "activityBarBadge.foreground": "#15202b",
+    "sash.hoverBorder": "#22fb7c",
+    "statusBar.background": "#04e662",
+    "statusBar.foreground": "#15202b",
+    "statusBarItem.hoverBackground": "#03b44d",
+    "statusBarItem.remoteBackground": "#04e662",
+    "statusBarItem.remoteForeground": "#15202b",
+    "titleBar.activeBackground": "#04e662",
+    "titleBar.activeForeground": "#15202b",
+    "titleBar.inactiveBackground": "#04e66299",
+    "titleBar.inactiveForeground": "#15202b99",
+    "commandCenter.border": "#15202b99"
+  },
+  "peacock.color": "#04e662"
+}
