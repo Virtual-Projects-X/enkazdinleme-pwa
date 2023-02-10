@@ -92,10 +92,9 @@ const SliderSection = ({ className, mediaBlobUrl }) => {
 
     useEffect(() => {
         if (mediaBlobUrl && audioRef.current) {
-            console.log(audioRef.current, 'W?');
-            const audioCtx = new AudioContext();
-
             if (!audioTrackRef.current) {
+                const audioCtx = new AudioContext();
+
                 audioTrackRef.current = audioCtx.createMediaElementSource(
                     audioRef.current
                 );
@@ -191,12 +190,7 @@ const SliderSection = ({ className, mediaBlobUrl }) => {
                 </Row>
                 {mediaBlobUrl && (
                     <Row className="mt-md" align="middle" justify="center">
-                        <audio
-                            autoPlay
-                            ref={audioRef}
-                            src={mediaBlobUrl}
-                            controls
-                        />
+                        <audio ref={audioRef} src={mediaBlobUrl} controls />
                         <Text>{contentType}</Text>
                         <Text>{mediaBlobUrl}</Text>
                     </Row>
