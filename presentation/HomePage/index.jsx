@@ -223,9 +223,9 @@ const HomePage = () => {
             <ReactMediaRecorder
                 audio
                 video={false}
-                blobPropertyBag={{
-                    type: 'audio/mp3',
-                }}
+                // blobPropertyBag={{
+                //     type: 'audio/wav',
+                // }}
                 render={({
                     status,
                     startRecording,
