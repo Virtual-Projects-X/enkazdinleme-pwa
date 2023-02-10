@@ -60,12 +60,25 @@ const SliderSection = ({ className, mediaBlobUrl }) => {
     const [level, setLevel] = useState(1);
     const [minFrequency, setMinFrequency] = useState(300);
     const [maxFrequency, setMaxFrequency] = useState(3500);
+    const [contentType, setContentType] = useState();
 
     const resetInitial = () => {
         setLevel(1);
         setMinFrequency(300);
         setMaxFrequency(3500);
     };
+
+    useEffect(() => {
+        if (mediaBlobUrl) {
+            fetch(mediaBlobUrl).then((response) => {
+                setContentType(JSON.stringify([...response.headers]));
+            });
+        }
+    }, [mediaBlobUrl]);
+
+    // blob:http://localhost:3000/ae656c1e-7365-441e-9c28-d650246f2f36
+
+    console.log(contentType, 'xxx');
 
     return (
         <SlidersWrapper className={className}>
@@ -115,6 +128,7 @@ const SliderSection = ({ className, mediaBlobUrl }) => {
                 {mediaBlobUrl && (
                     <Row className="mt-md" align="middle" justify="center">
                         <audio src={mediaBlobUrl} controls />
+                        <Text>{contentType}</Text>
                     </Row>
                 )}
             </Col>
