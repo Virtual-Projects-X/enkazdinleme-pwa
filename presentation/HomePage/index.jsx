@@ -77,7 +77,7 @@ const SliderSection = ({ className, mediaBlobUrl }) => {
     );
 
     const [contentType, setContentType] = useState();
-    const audioRef = useRef('audio-element');
+    const audioRef = useRef(null);
     const gainRef = useRef(null);
     const filterLowRef = useRef(null);
     const filterHighRef = useRef(null);
@@ -91,7 +91,8 @@ const SliderSection = ({ className, mediaBlobUrl }) => {
     };
 
     useEffect(() => {
-        if (mediaBlobUrl && audioRef) {
+        if (mediaBlobUrl && audioRef.current) {
+            console.log(audioRef.current, 'W?');
             const audioCtx = new AudioContext();
 
             // if (!audioTrackRef.current) {
@@ -192,7 +193,7 @@ const SliderSection = ({ className, mediaBlobUrl }) => {
                     <Row className="mt-md" align="middle" justify="center">
                         <audio
                             // autoPlay
-                            ref={audioRef}
+                            // ref={audioRef}
                             src="https://www.gutenberg.org/files/28947/mp3/28947-08.mp3"
                             controls
                         />
