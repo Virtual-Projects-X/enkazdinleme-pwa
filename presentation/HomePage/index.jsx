@@ -95,37 +95,37 @@ const SliderSection = ({ className, mediaBlobUrl }) => {
             console.log(audioRef.current, 'W?');
             const audioCtx = new AudioContext();
 
-            // if (!audioTrackRef.current) {
-            audioTrackRef.current = audioCtx.createMediaElementSource(
-                audioRef.current
-            );
-            const gainNode = audioCtx.createGain();
-            gainNode.gain.value = gainValue;
+            if (!audioTrackRef.current) {
+                audioTrackRef.current = audioCtx.createMediaElementSource(
+                    audioRef.current
+                );
+                const gainNode = audioCtx.createGain();
+                gainNode.gain.value = gainValue;
 
-            const filterLow = audioCtx.createBiquadFilter();
-            filterLow.type = 'highpass';
-            filterLow.frequency.value = lowFrequencyValue;
+                const filterLow = audioCtx.createBiquadFilter();
+                filterLow.type = 'highpass';
+                filterLow.frequency.value = lowFrequencyValue;
 
-            const filterHigh = audioCtx.createBiquadFilter();
-            filterHigh.type = 'lowpass';
-            filterHigh.frequency.value = highFrequencyValue;
+                const filterHigh = audioCtx.createBiquadFilter();
+                filterHigh.type = 'lowpass';
+                filterHigh.frequency.value = highFrequencyValue;
 
-            gainRef.current = gainNode;
-            filterLowRef.current = filterLow;
-            filterHighRef.current = filterHigh;
+                gainRef.current = gainNode;
+                filterLowRef.current = filterLow;
+                filterHighRef.current = filterHigh;
 
-            fetch(mediaBlobUrl).then((response) => {
-                setContentType(JSON.stringify([...response.headers]));
-            });
+                fetch(mediaBlobUrl).then((response) => {
+                    setContentType(JSON.stringify([...response.headers]));
+                });
 
-            visualizerRef.current = new Audio(mediaBlobUrl);
+                visualizerRef.current = new Audio(mediaBlobUrl);
 
-            audioTrackRef.current
-                .connect(filterLow)
-                .connect(filterHigh)
-                .connect(gainNode)
-                .connect(audioCtx.destination);
-            // }
+                audioTrackRef.current
+                    .connect(filterLow)
+                    .connect(filterHigh)
+                    .connect(gainNode)
+                    .connect(audioCtx.destination);
+            }
         }
     }, [mediaBlobUrl]);
 
@@ -192,9 +192,9 @@ const SliderSection = ({ className, mediaBlobUrl }) => {
                 {mediaBlobUrl && (
                     <Row className="mt-md" align="middle" justify="center">
                         <audio
-                            // autoPlay
-                            // ref={audioRef}
-                            src="https://www.gutenberg.org/files/28947/mp3/28947-08.mp3"
+                            autoPlay
+                            ref={audioRef}
+                            src={mediaBlobUrl}
                             controls
                         />
                         <Text>{contentType}</Text>
