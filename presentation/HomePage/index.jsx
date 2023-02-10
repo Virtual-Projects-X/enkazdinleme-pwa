@@ -1,4 +1,3 @@
-/* eslint-disable no-lone-blocks */
 /* eslint-disable jsx-a11y/media-has-caption */
 import React, { useEffect, useState, useRef } from 'react';
 
@@ -83,6 +82,7 @@ const SliderSection = ({ className, mediaBlobUrl }) => {
     const filterLowRef = useRef(null);
     const filterHighRef = useRef(null);
     const audioTrackRef = useRef(null);
+    const visualizerRef = useRef(null);
 
     const resetInitial = () => {
         setGainValue(1);
@@ -116,6 +116,8 @@ const SliderSection = ({ className, mediaBlobUrl }) => {
                 fetch(mediaBlobUrl).then((response) => {
                     setContentType(JSON.stringify([...response.headers]));
                 });
+
+                visualizerRef.current = new Audio(mediaBlobUrl);
 
                 audioTrackRef.current
                     .connect(filterLow)
@@ -188,8 +190,12 @@ const SliderSection = ({ className, mediaBlobUrl }) => {
                 </Row>
                 {mediaBlobUrl && (
                     <Row className="mt-md" align="middle" justify="center">
-                        <audio ref={audioRef} src={mediaBlobUrl} controls />
-                        <Text>{contentType}</Text>
+                        <audio
+                            id="audio-element-id"
+                            ref={audioRef}
+                            src={mediaBlobUrl}
+                            controls
+                        />
                     </Row>
                 )}
             </Col>
@@ -226,12 +232,8 @@ const HomePage = () => {
                                 <Button
                                     icon={<AudioOutlined />}
                                     onClick={() => {
-                                        {
-                                            setCurrentStatus(
-                                                initialStatus.STARTED
-                                            );
-                                            startRecording();
-                                        }
+                                        startRecording();
+                                        setCurrentStatus(initialStatus.STARTED);
                                     }}
                                     type="primary"
                                     className="btn w-100-f">
@@ -242,10 +244,10 @@ const HomePage = () => {
                                     icon={<AudioMutedOutlined />}
                                     danger
                                     onClick={() => {
+                                        stopRecording();
                                         setCurrentStatus(
                                             initialStatus.FINISHED
                                         );
-                                        stopRecording();
                                     }}
                                     type="primary"
                                     className="btn w-100-f">
@@ -256,10 +258,10 @@ const HomePage = () => {
                                     <Button
                                         icon={<AudioMutedOutlined />}
                                         onClick={() => {
+                                            startRecording();
                                             setCurrentStatus(
                                                 initialStatus.STARTED
                                             );
-                                            startRecording();
                                         }}
                                         type="primary"
                                         className="btn w-100-f">
