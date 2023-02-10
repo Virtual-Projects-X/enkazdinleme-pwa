@@ -196,6 +196,8 @@ const SliderSection = ({ className, mediaBlobUrl }) => {
                             src={mediaBlobUrl}
                             controls
                         />
+
+                        <Text>{contentType}</Text>
                     </Row>
                 )}
             </Col>
