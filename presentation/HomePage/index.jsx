@@ -221,6 +221,7 @@ const HomePage = () => {
             </Row>
             <ReactMediaRecorder
                 audio
+                type={{ type: 'audio/mp3' }}
                 video={false}
                 render={({
                     status,
