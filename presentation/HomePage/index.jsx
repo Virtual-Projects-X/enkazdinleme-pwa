@@ -193,7 +193,7 @@ const SliderSection = ({ className, mediaBlobUrl }) => {
                         <audio
                             // autoPlay
                             ref={audioRef}
-                            src="https://www2.cs.uic.edu/~i101/SoundFiles/BabyElephantWalk60.wav"
+                            src="https://www.gutenberg.org/files/28947/mp3/28947-08.mp3"
                             controls
                         />
                         <Text>{contentType}</Text>
