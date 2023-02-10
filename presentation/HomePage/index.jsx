@@ -196,7 +196,6 @@ const SliderSection = ({ className, mediaBlobUrl }) => {
                             src={mediaBlobUrl}
                             controls
                         />
-
                         <Text>{contentType}</Text>
                         <Text>{mediaBlobUrl}</Text>
                     </Row>
@@ -282,7 +281,6 @@ const HomePage = () => {
                     </Row>
                 )}
             />
-
             <div
                 className="bullets-wrapper mt-md"
                 align="middle"
